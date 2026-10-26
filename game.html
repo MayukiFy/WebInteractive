@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมแยกขยะ Eco Sort 60 วินาที |67011213047</title>
+  <meta name="description" content="มินิเกมแยกขยะจำลอง 60 วินาที ฝึกทักษะการคัดแยกขยะลงถัง 4 สีให้ถูกต้อง สนุก ได้ความรู้ พร้อมระบบนับคะแนนและสรุปผล">
+  <meta name="author" content="Natthaphum Thongsri">
+
+  <!-- Google Fonts: Prompt & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Preloader Loading Animation -->
+  <div id="preloader">
+    <div class="spinner-liquid">
+      <i class="fa-solid fa-gamepad"></i>
+    </div>
+    <p class="mt-3 fw-semibold text-muted small">กำลังโหลดเกมแยกขยะ...</p>
+  </div>
+
+  <!-- Shared Navigation Bar (Managed via components.js) -->
+  <header id="site-navbar"></header>
+
+  <!-- Main Content with Sharp Background -->
+  <main class="hero-bg-section hero-game py-5" style="min-height: 90vh;">
+    <div class="container game-container">
+      
+      <!-- Page Title & Instructions Intro -->
+      <div class="text-center mb-4 reveal">
+        <h1 class="display-5 fw-extrabold mb-2">
+          Eco Sort <span class="gradient-text">แยกขยะกู้โลก</span>
+        </h1>
+        <p class="mx-auto" style="max-width: 650px;">
+          ลากหรือแตะขยะที่ปรากฏลงในถังขยะ 4 สีให้ถูกต้องก่อนหมดเวลา 1 นาที ตอบถูกได้คะแนนสะสมและคอมโบ ตอบผิดจะถูกหักคะแนน!
+        </p>
+      </div>
+
+      <!-- Game Start Overlay / Welcome Card -->
+      <div id="game-start-overlay" class="glass-card hero-glass-box game-overlay-card reveal">
+        <div class="mb-4">
+          <span class="display-2 text-primary"><i class="fa-solid fa-earth-americas"></i></span>
+        </div>
+        <h2 class="fw-bold mb-3">พร้อมที่จะทดสอบความไวและความแม่นยำหรือยัง?</h2>
+        <div class="row g-3 justify-content-center text-start my-4 max-w-600 mx-auto" style="max-width: 580px;">
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 small">
+              <i class="fa-solid fa-check text-success fs-6"></i>
+              <span><strong>แยกถูก:</strong> ได้ +10 คะแนน (คอมโบรับโบนัส)</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 small">
+              <i class="fa-solid fa-xmark text-danger fs-6"></i>
+              <span><strong>แยกผิด:</strong> โดนหัก -5 คะแนน และรีเซ็ตคอมโบ</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 small">
+              <i class="fa-solid fa-clock text-warning fs-6"></i>
+              <span><strong>เวลาจำกัด:</strong> 60 วินาที (1 นาที)</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 small">
+              <i class="fa-solid fa-mobile-screen-button text-info fs-6"></i>
+              <span><strong>วิธีเล่น:</strong> ลากลงถัง หรือแตะที่ถังขยะได้เลย</span>
+            </div>
+          </div>
+        </div>
+        <button id="btn-start-game" class="btn-liquid-primary btn-lg px-5 py-3 fs-5">
+          <i class="fa-solid fa-play me-2"></i> เริ่มเล่นเกมทันที!
+        </button>
+      </div>
+
+      <!-- Game Play Area (Visible during play) -->
+      <div id="game-play-zone" style="display: none;">
+        
+        <!-- Game HUD (Timer, Score, Combo, Sound Toggle) -->
+        <div class="glass-card game-hud">
+          <!-- Time -->
+          <div class="hud-item">
+            <div class="hud-icon" style="background: linear-gradient(135deg, #ef4444, #f59e0b);">
+              <i class="fa-solid fa-stopwatch"></i>
+            </div>
+            <div>
+              <div class="hud-label">เวลาที่เหลือ</div>
+              <div class="hud-value" id="hud-timer">1:00</div>
+            </div>
+          </div>
+
+          <!-- Score -->
+          <div class="hud-item">
+            <div class="hud-icon" style="background: var(--grad-primary);">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div>
+              <div class="hud-label">คะแนนรวม</div>
+              <div class="hud-value" id="hud-score">0</div>
+            </div>
+          </div>
+
+          <!-- Combo Streak -->
+          <div class="hud-item">
+            <div class="hud-icon" style="background: linear-gradient(135deg, #10b981, #06b6d4);">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+              <div class="hud-label">คอมโบต่อเนื่อง</div>
+              <div class="hud-value" id="hud-combo">0</div>
+            </div>
+          </div>
+
+          <!-- Audio Toggle -->
+          <div class="hud-item">
+            <button id="btn-sound-toggle" class="btn-theme-toggle" title="เปิด/ปิดเสียงเอฟเฟกต์">
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Trash Spawning Stage -->
+        <div class="item-stage" id="item-stage">
+          <!-- Dynamically spawned by game.js -->
+        </div>
+
+        <!-- 4 Bins Drop Targets Grid -->
+        <div class="bins-grid">
+          <!-- Green Bin: Organic -->
+          <div class="glass-card game-drop-bin bin-target-green" data-bin-type="green">
+            <span class="bin-mascot-icon text-success">🍏</span>
+            <div class="bin-title-text text-success">ถังขยะเปียก</div>
+            <div class="bin-sub-text">เศษอาหาร / ใบไม้ / อินทรีย์</div>
+          </div>
+
+          <!-- Yellow Bin: Recycle -->
+          <div class="glass-card game-drop-bin bin-target-yellow" data-bin-type="yellow">
+            <span class="bin-mascot-icon text-warning">📦</span>
+            <div class="bin-title-text text-warning-emphasis">ถังขยะรีไซเคิล</div>
+            <div class="bin-sub-text">ขวดพลาสติก / แก้ว / กล่องลัง</div>
+          </div>
+
+          <!-- Blue Bin: General -->
+          <div class="glass-card game-drop-bin bin-target-blue" data-bin-type="blue">
+            <span class="bin-mascot-icon text-primary">🍟</span>
+            <div class="bin-title-text text-primary">ถังขยะทั่วไป</div>
+            <div class="bin-sub-text">ซองขนม / โฟม / ทิชชู</div>
+          </div>
+
+          <!-- Red Bin: Hazardous -->
+          <div class="glass-card game-drop-bin bin-target-red" data-bin-type="red">
+            <span class="bin-mascot-icon text-danger">🔋</span>
+            <div class="bin-title-text text-danger">ถังขยะอันตราย</div>
+            <div class="bin-sub-text">ถ่านไฟฉาย / หลอดไฟ / สเปรย์</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Game Result Modal (Bootstrap 5.3) -->
+  <div class="modal fade modal-glass" id="gameResultModal" tabindex="-1" aria-labelledby="gameResultModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <div class="modal-body p-2">
+          
+          <div class="medal-icon-wrap" id="modal-rank-badge">
+            🏆
+          </div>
+
+          <h3 class="fw-bold mb-1" id="modal-rank-title">สุดยอดนักแยกขยะ!</h3>
+          <p class="small mb-4" id="modal-rank-desc">
+            คุณมีความรู้ความเข้าใจในการคัดแยกขยะอย่างยอดเยี่ยม
+          </p>
+
+          <!-- Result Stats Grid -->
+          <div class="row g-2 mb-4 text-start">
+            <div class="col-6">
+              <div class="p-3 rounded-4 bg-body-secondary bg-opacity-75">
+                <div class="small">คะแนนรวมทั้งหมด</div>
+                <div class="fs-3 fw-bold text-primary" id="modal-final-score">0</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 rounded-4 bg-body-secondary bg-opacity-75">
+                <div class="small">ความแม่นยำ</div>
+                <div class="fs-3 fw-bold text-success" id="modal-accuracy">0%</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-2 px-3 rounded-4 bg-body-secondary bg-opacity-75">
+                <div class="small">แยกถูก: <strong class="text-success" id="modal-correct-count">0</strong> ชิ้น</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-2 px-3 rounded-4 bg-body-secondary bg-opacity-75">
+                <div class="small">แยกผิด: <strong class="text-danger" id="modal-wrong-count">0</strong> ชิ้น</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="p-2 px-3 rounded-4 bg-body-secondary bg-opacity-75 text-center">
+                <div class="small">คอมโบต่อเนื่องสูงสุด: <strong class="text-warning-emphasis" id="modal-max-combo">0</strong> ครั้ง</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Action Buttons -->
+          <div class="d-flex flex-column gap-2">
+            <button id="btn-restart-game" class="btn-liquid-primary w-100 justify-content-center py-2">
+              <i class="fa-solid fa-rotate-right me-1"></i> เล่นใหม่อีกครั้ง
+            </button>
+            <a href="daily-waste.html" class="btn-liquid-outline w-100 justify-content-center py-2">
+              <i class="fa-solid fa-book-open me-1"></i> ทบทวนความรู้เรื่องขยะ
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Footer (Managed via components.js) -->
+  <footer id="site-footer"></footer>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Project Scripts -->
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/game.js"></script>
+</body>
+</html>
